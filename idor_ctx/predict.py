@@ -43,9 +43,9 @@ def parse_response(text):
     return {"verdict": obj["verdict"], "evidence": obj.get("evidence"), "missing_context": obj.get("missing_context")}
 
 
-def condition_order(index):
+def condition_order(index, conditions=CONDITIONS):
     """사례마다 조건 실행 순서를 회전시켜 순서 효과(캐시 등)를 한 조건에 몰리지 않게 한다."""
-    names = list(CONDITIONS)
+    names = list(conditions)
     k = index % len(names)
     return names[k:] + names[:k]
 

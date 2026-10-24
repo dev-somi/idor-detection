@@ -1,0 +1,14 @@
+# bench 앱 실행 테스트용 (예측·추출·평가 코드는 표준 라이브러리만 씀)
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+sqlalchemy==2.0.2
+pydantic>=2.6
+httpx==0.27.2
+pytest>=8.0
+connexion[swagger-ui]==2.14.2
+flask==2.2.2
+werkzeug==2.2.2
+flask-sqlalchemy==3.0.3
+jsonschema==4.17.3
+PyJWT==2.6.0
+markupsafe==2.1.2

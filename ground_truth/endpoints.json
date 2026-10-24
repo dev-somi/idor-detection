@@ -1,0 +1,458 @@
+{
+ "_note": "엔드포인트 실험 정답표. 예측 단계(idor_ctx/ep_predict.py)에서 읽지 않는다. expected: vulnerable | not_vulnerable. class: positive/negative 계열은 주 지표, boundary는 주 지표에서 제외하고 민감도 분석에만 쓴다. required_functions: 판단을 근거 있게 내리려면 원문이 보여야 하는 함수(핸들러 제외, '모듈.함수'). current_user가 요청자라는 사실에 판정이 기대는 항목은 get_current_user/token_validator를 포함한다. out_of_scope: 추출기가 따라가지 않는 메서드 중 판단에 필요한 것.",
+ "items": {
+  "campus:e01": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "positive",
+   "type": "원본 VULN-001",
+   "reason": "user_id로 프로필을 조회하고 current_user.id와 비교하지 않는다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e02": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-001",
+   "reason": "current_user를 그대로 반환한다. current_user가 토큰의 사용자라는 근거는 get_current_user에 있다.",
+   "required_functions": [
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e03": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "positive",
+   "type": "원본 VULN-002",
+   "reason": "student_id로 수강 내역을 조회하고 current_user와 비교하지 않는다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e04": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-002",
+   "reason": "current_user.id로 필터링한다.",
+   "required_functions": [
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e05": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "public_negative",
+   "type": "원본 SAFE-008",
+   "reason": "강의 카탈로그는 정책상 공개 정보다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e06": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "positive",
+   "type": "원본 VULN-003",
+   "reason": "submission.owner_id와 current_user.id를 비교하지 않는다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e07": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-003",
+   "reason": "current_user.id로 필터링한다.",
+   "required_functions": [
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e08": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "positive",
+   "type": "원본 VULN-004",
+   "reason": "appointment 참여자인지 확인하지 않고 수정한다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e09": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-004",
+   "reason": "current_user.id가 student_id 또는 professor_id인 예약만 조회한다.",
+   "required_functions": [
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e10": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "public_negative",
+   "type": "원본 SAFE-005",
+   "reason": "동아리 게시글 조회는 정책상 공개다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e11": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-011",
+   "reason": "author_id를 current_user.id로 강제한다.",
+   "required_functions": [
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e12": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-010",
+   "reason": "author_id 비교와 admin 예외가 있다.",
+   "required_functions": [
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e13": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "positive",
+   "type": "원본 VULN-005",
+   "reason": "작성자·admin 확인 없이 삭제한다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e14": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "positive",
+   "type": "원본 VULN-006",
+   "reason": "owner_id와 visibility를 확인하지 않고 내용을 반환한다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e15": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-006",
+   "reason": "current_user.id로 필터링한다.",
+   "required_functions": [
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e16": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "negative",
+   "type": "원본 SAFE-007",
+   "reason": "Depends(require_role('admin'))가 role을 확인한다.",
+   "required_functions": [
+    "app.auth.require_role",
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e17": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "public_negative",
+   "type": "원본 SAFE-009",
+   "reason": "공지사항은 정책상 공개다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "idor-test-codebase-main tests/test_idor_behavior.py"
+  },
+  "campus:e18": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "delegated_negative",
+   "type": "추가: 서비스 함수(depth1)가 검사",
+   "reason": "fetch_enrollment가 student_id != current_user.id이면 404를 낸다.",
+   "required_functions": [
+    "app.services.records.fetch_enrollment",
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "campus:e19": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "delegated_positive",
+   "type": "추가: 서비스 함수(depth1)가 검사하지 않음",
+   "reason": "fetch_submission은 current_user를 받지만 쓰지 않는다.",
+   "required_functions": [
+    "app.services.records.fetch_submission"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "campus:e20": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "delegated_positive",
+   "type": "추가: depth2 헬퍼가 정책과 다른 기준(학과)을 검사",
+   "reason": "ensure_profile_visible은 같은 학과면 통과시킨다. 정책은 본인 또는 admin만 허용한다.",
+   "required_functions": [
+    "app.services.records.build_transcript",
+    "app.services.access.ensure_profile_visible"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "campus:e21": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "public_negative",
+   "type": "추가: 서비스를 거치는 공개 정보",
+   "reason": "과제 목록(제목·마감일)은 정책상 공개이고 list_course_assignments는 그 필드만 반환한다.",
+   "required_functions": [
+    "app.services.records.list_course_assignments"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "campus:e22": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "delegated_negative",
+   "type": "추가: Depends 의존성(depth1)이 검사",
+   "reason": "get_accessible_file이 private 파일의 owner_id를 비교한다.",
+   "required_functions": [
+    "app.dependencies.get_accessible_file",
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "campus:e23": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "delegated_positive",
+   "type": "추가: 검사 함수 반환값 무시",
+   "reason": "can_modify_file은 bool을 반환할 뿐이고 delete_file은 그 값을 쓰지 않는다.",
+   "required_functions": [
+    "app.services.records.load_file",
+    "app.services.access.can_modify_file"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "campus:e24": {
+   "bench": "campus",
+   "expected": "not_vulnerable",
+   "class": "delegated_negative",
+   "type": "추가: depth2 헬퍼가 검사",
+   "reason": "get_appointment_detail → ensure_participant가 참여자가 아니면 403을 낸다.",
+   "required_functions": [
+    "app.services.records.get_appointment_detail",
+    "app.services.access.ensure_participant",
+    "app.auth.get_current_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "campus:e25": {
+   "bench": "campus",
+   "expected": "vulnerable",
+   "class": "delegated_positive",
+   "type": "추가: Depends 의존성이 존재 여부만 확인",
+   "reason": "get_appointment_for_user는 current_user를 받지만 참여자인지 확인하지 않는다.",
+   "required_functions": [
+    "app.dependencies.get_appointment_for_user"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/campus_extra/tests/test_extra_behavior.py"
+  },
+  "vampi_vuln:e01": {
+   "bench": "vampi_vuln",
+   "expected": "vulnerable",
+   "class": "paired_positive",
+   "type": "P1",
+   "reason": "제목만으로 조회해 다른 사용자의 secret을 반환한다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_vuln.py"
+  },
+  "vampi_secure:e01": {
+   "bench": "vampi_secure",
+   "expected": "not_vulnerable",
+   "class": "paired_negative",
+   "type": "P1 짝",
+   "reason": "토큰 주체(resp['sub'])의 책 중에서만 찾는다.",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_secure.py"
+  },
+  "vampi_vuln:e02": {
+   "bench": "vampi_vuln",
+   "expected": "vulnerable",
+   "class": "paired_positive",
+   "type": "P2",
+   "reason": "경로의 username 사용자의 비밀번호를 바꾼다. 명세(openapi)에는 소유권 문구가 없다.",
+   "required_functions": [],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_vuln.py"
+  },
+  "vampi_secure:e02": {
+   "bench": "vampi_secure",
+   "expected": "not_vulnerable",
+   "class": "paired_negative",
+   "type": "P2 짝",
+   "reason": "토큰 주체의 비밀번호를 바꾼다.",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_secure.py"
+  },
+  "vampi_vuln:e03": {
+   "bench": "vampi_vuln",
+   "expected": "not_vulnerable",
+   "class": "hard_negative",
+   "type": "N1",
+   "reason": "경로 username을 쓰지 않고 토큰 주체의 이메일을 바꾼다(빌드 차이는 정규식뿐).",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_vuln.py"
+  },
+  "vampi_secure:e03": {
+   "bench": "vampi_secure",
+   "expected": "not_vulnerable",
+   "class": "hard_negative",
+   "type": "N1",
+   "reason": "경로 username을 쓰지 않고 토큰 주체의 이메일을 바꾼다(빌드 차이는 정규식뿐).",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_secure.py"
+  },
+  "vampi_vuln:e04": {
+   "bench": "vampi_vuln",
+   "expected": "not_vulnerable",
+   "class": "hard_negative",
+   "type": "N2",
+   "reason": "토큰 주체가 admin일 때만 삭제한다. admin의 타인 삭제는 정책상 허용이다.",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_vuln.py"
+  },
+  "vampi_secure:e04": {
+   "bench": "vampi_secure",
+   "expected": "not_vulnerable",
+   "class": "hard_negative",
+   "type": "N2",
+   "reason": "토큰 주체가 admin일 때만 삭제한다. admin의 타인 삭제는 정책상 허용이다.",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_secure.py"
+  },
+  "vampi_vuln:e05": {
+   "bench": "vampi_vuln",
+   "expected": "not_vulnerable",
+   "class": "hard_negative",
+   "type": "N3",
+   "reason": "새 책의 user_id를 토큰 주체로 정한다.",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_vuln.py"
+  },
+  "vampi_secure:e05": {
+   "bench": "vampi_secure",
+   "expected": "not_vulnerable",
+   "class": "hard_negative",
+   "type": "N3",
+   "reason": "새 책의 user_id를 토큰 주체로 정한다.",
+   "required_functions": [
+    "api_views.users.token_validator"
+   ],
+   "out_of_scope": [],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_secure.py"
+  },
+  "vampi_vuln:e06": {
+   "bench": "vampi_vuln",
+   "expected": "not_vulnerable",
+   "class": "boundary",
+   "type": "B1",
+   "reason": "인증 없이 username·email만 반환한다. 정책상 공개. vuln 빌드의 SQLi는 IDOR 범위 밖. 반환 필드는 User.get_user(메서드)에 있다.",
+   "required_functions": [],
+   "out_of_scope": [
+    "User.get_user"
+   ],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_vuln.py"
+  },
+  "vampi_secure:e06": {
+   "bench": "vampi_secure",
+   "expected": "not_vulnerable",
+   "class": "boundary",
+   "type": "B1",
+   "reason": "인증 없이 username·email만 반환한다. 정책상 공개. vuln 빌드의 SQLi는 IDOR 범위 밖. 반환 필드는 User.get_user(메서드)에 있다.",
+   "required_functions": [],
+   "out_of_scope": [
+    "User.get_user"
+   ],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_secure.py"
+  },
+  "vampi_vuln:e07": {
+   "bench": "vampi_vuln",
+   "expected": "vulnerable",
+   "class": "boundary",
+   "type": "B2",
+   "reason": "모든 사용자의 비밀번호를 반환한다. 정책 위반이지만 객체 단위 인가가 아닌 과다 노출이다.",
+   "required_functions": [],
+   "out_of_scope": [
+    "User.get_all_users_debug"
+   ],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_vuln.py"
+  },
+  "vampi_secure:e07": {
+   "bench": "vampi_secure",
+   "expected": "vulnerable",
+   "class": "boundary",
+   "type": "B2",
+   "reason": "모든 사용자의 비밀번호를 반환한다. 정책 위반이지만 객체 단위 인가가 아닌 과다 노출이다.",
+   "required_functions": [],
+   "out_of_scope": [
+    "User.get_all_users_debug"
+   ],
+   "behavior_test": "bench_src/vampi_tests/test_vampi_secure.py"
+  }
+ }
+}

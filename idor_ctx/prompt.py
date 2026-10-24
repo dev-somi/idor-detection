@@ -1,6 +1,7 @@
 """모든 조건(A~D)에서 똑같이 쓰는 판단 프롬프트와 출력 JSON 스키마.
 
 조건마다 달라지는 것은 CODE 블록과 '보이지 않는 호출' 목록뿐이다.
+엔드포인트 실험(ep-v1)도 같은 SYSTEM_PROMPT와 OUTPUT_SCHEMA를 쓰고, 사용자 프롬프트에 ENDPOINT 줄만 더한다.
 """
 
 PROMPT_VERSION = "v1"
@@ -52,6 +53,39 @@ def _not_shown_section(ctx):
     if not lines:
         return header + "\nCalls not shown: none."
     return header + "\nCalls not shown:\n" + "\n".join(lines)
+
+
+EP_PROMPT_VERSION = "ep-v1"
+
+
+def _ep_not_shown_section(ctx):
+    """엔드포인트 실험용 '보이지 않는 호출' 목록. 여러 파일이라 머리말만 다르고 나열 규칙은 같다."""
+    if ctx["condition"] == "A_full":
+        return "The entire application source is shown."
+    lines = []
+    for name in ctx["excluded_by_depth"]:
+        lines.append(f"- {name}(...): defined in this codebase but not shown (call depth limit)")
+    for u in ctx["unresolved"]:
+        if u["kind"] == "builtin":
+            continue
+        lines.append(f"- {u['call']}(...) called in {u['in']}: not resolved by the extractor ({u['kind']}), body not shown")
+    header = ("Only selected functions from the codebase are shown. "
+              "Classes (including data models and schemas) and module-level variables are not shown.")
+    if not lines:
+        return header + "\nCalls not shown: none."
+    return header + "\nCalls not shown:\n" + "\n".join(lines)
+
+
+def build_endpoint_prompt(policy, endpoint, ctx):
+    """정책 + 엔드포인트 + 핸들러 + 조건별 코드로 사용자 프롬프트를 만든다. 시스템 프롬프트는 SYSTEM_PROMPT 그대로."""
+    return (
+        f"ACCESS POLICY:\n{policy}\n\n"
+        f"ENDPOINT: {endpoint['method']} {endpoint['path']}\n"
+        f"TARGET FUNCTION: {ctx['target']} (the handler of this endpoint)\n\n"
+        f"CODE:\n```python\n{ctx['code']}```\n\n"
+        f"CONTEXT NOTE:\n{_ep_not_shown_section(ctx)}\n\n"
+        "Return the JSON object."
+    )
 
 
 def build_user_prompt(policy, target, ctx):

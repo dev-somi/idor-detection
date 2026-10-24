@@ -1,0 +1,202 @@
+[
+  {
+    "item_id": "campus:e01",
+    "method": "GET",
+    "path": "/users/{user_id}/profile",
+    "file": "app/routers/users.py",
+    "handler": "get_user_profile",
+    "policy": "A user profile (name, email, department, role) may be viewed only by that user."
+  },
+  {
+    "item_id": "campus:e02",
+    "method": "GET",
+    "path": "/me/profile",
+    "file": "app/routers/users.py",
+    "handler": "get_my_profile",
+    "policy": "A user profile (name, email, department, role) may be viewed only by that user."
+  },
+  {
+    "item_id": "campus:e03",
+    "method": "GET",
+    "path": "/students/{student_id}/courses",
+    "file": "app/routers/courses.py",
+    "handler": "get_student_courses",
+    "policy": "A student's enrollment records (semester, course, grade) may be viewed only by that student or by an admin."
+  },
+  {
+    "item_id": "campus:e04",
+    "method": "GET",
+    "path": "/me/courses",
+    "file": "app/routers/courses.py",
+    "handler": "get_my_courses",
+    "policy": "A student's enrollment records (semester, course, grade) may be viewed only by that student or by an admin."
+  },
+  {
+    "item_id": "campus:e05",
+    "method": "GET",
+    "path": "/courses/{course_id}",
+    "file": "app/routers/courses.py",
+    "handler": "get_course",
+    "policy": "Course catalog entries (code, title, professor) are public information that any authenticated user may view."
+  },
+  {
+    "item_id": "campus:e06",
+    "method": "GET",
+    "path": "/assignments/submissions/{submission_id}",
+    "file": "app/routers/assignments.py",
+    "handler": "get_submission",
+    "policy": "A submission (content and score) may be viewed only by the student who submitted it."
+  },
+  {
+    "item_id": "campus:e07",
+    "method": "GET",
+    "path": "/me/assignments/submissions",
+    "file": "app/routers/assignments.py",
+    "handler": "get_my_submissions",
+    "policy": "A submission (content and score) may be viewed only by the student who submitted it."
+  },
+  {
+    "item_id": "campus:e08",
+    "method": "PUT",
+    "path": "/appointments/{appointment_id}",
+    "file": "app/routers/appointments.py",
+    "handler": "update_appointment",
+    "policy": "An appointment may be viewed or changed only by the users who take part in it (its student or its professor)."
+  },
+  {
+    "item_id": "campus:e09",
+    "method": "GET",
+    "path": "/me/appointments",
+    "file": "app/routers/appointments.py",
+    "handler": "get_my_appointments",
+    "policy": "An appointment may be viewed or changed only by the users who take part in it (its student or its professor)."
+  },
+  {
+    "item_id": "campus:e10",
+    "method": "GET",
+    "path": "/clubs/posts/{post_id}",
+    "file": "app/routers/clubs.py",
+    "handler": "get_club_post",
+    "policy": "Club posts are public content that any authenticated user may read. Any user may create a post, and the author of a new post is the user who created it. A post may be edited or deleted only by its author or by an admin."
+  },
+  {
+    "item_id": "campus:e11",
+    "method": "POST",
+    "path": "/clubs/posts",
+    "file": "app/routers/clubs.py",
+    "handler": "create_club_post",
+    "policy": "Club posts are public content that any authenticated user may read. Any user may create a post, and the author of a new post is the user who created it. A post may be edited or deleted only by its author or by an admin."
+  },
+  {
+    "item_id": "campus:e12",
+    "method": "PUT",
+    "path": "/clubs/posts/{post_id}",
+    "file": "app/routers/clubs.py",
+    "handler": "update_club_post",
+    "policy": "Club posts are public content that any authenticated user may read. Any user may create a post, and the author of a new post is the user who created it. A post may be edited or deleted only by its author or by an admin."
+  },
+  {
+    "item_id": "campus:e13",
+    "method": "DELETE",
+    "path": "/clubs/posts/{post_id}",
+    "file": "app/routers/clubs.py",
+    "handler": "delete_club_post",
+    "policy": "Club posts are public content that any authenticated user may read. Any user may create a post, and the author of a new post is the user who created it. A post may be edited or deleted only by its author or by an admin."
+  },
+  {
+    "item_id": "campus:e14",
+    "method": "GET",
+    "path": "/files/{file_id}/download",
+    "file": "app/routers/files.py",
+    "handler": "download_file",
+    "policy": "A private file may be downloaded or viewed only by its owner. A public file may be downloaded or viewed by any authenticated user. A file may be deleted only by its owner. Users may list their own files."
+  },
+  {
+    "item_id": "campus:e15",
+    "method": "GET",
+    "path": "/me/files",
+    "file": "app/routers/files.py",
+    "handler": "get_my_files",
+    "policy": "A private file may be downloaded or viewed only by its owner. A public file may be downloaded or viewed by any authenticated user. A file may be deleted only by its owner. Users may list their own files."
+  },
+  {
+    "item_id": "campus:e16",
+    "method": "POST",
+    "path": "/admin/notices",
+    "file": "app/routers/admin.py",
+    "handler": "create_notice",
+    "policy": "Notices are public information that any user may read. Only admins may create notices."
+  },
+  {
+    "item_id": "campus:e17",
+    "method": "GET",
+    "path": "/notices",
+    "file": "app/routers/admin.py",
+    "handler": "list_notices",
+    "policy": "Notices are public information that any user may read. Only admins may create notices."
+  },
+  {
+    "item_id": "campus:e18",
+    "method": "GET",
+    "path": "/enrollments/{enrollment_id}",
+    "file": "app/routers/academics.py",
+    "handler": "get_enrollment",
+    "policy": "A student's enrollment records (semester, course, grade) may be viewed only by that student or by an admin."
+  },
+  {
+    "item_id": "campus:e19",
+    "method": "GET",
+    "path": "/submissions/{submission_id}/feedback",
+    "file": "app/routers/academics.py",
+    "handler": "get_submission_feedback",
+    "policy": "A submission (content and score) may be viewed only by the student who submitted it."
+  },
+  {
+    "item_id": "campus:e20",
+    "method": "GET",
+    "path": "/students/{student_id}/transcript",
+    "file": "app/routers/academics.py",
+    "handler": "get_transcript",
+    "policy": "A student's enrollment records (semester, course, grade) may be viewed only by that student or by an admin."
+  },
+  {
+    "item_id": "campus:e21",
+    "method": "GET",
+    "path": "/courses/{course_id}/assignments",
+    "file": "app/routers/academics.py",
+    "handler": "get_course_assignments",
+    "policy": "The list of assignments of a course (title and due date) is public course information that any authenticated user may view."
+  },
+  {
+    "item_id": "campus:e22",
+    "method": "GET",
+    "path": "/files/{file_id}/meta",
+    "file": "app/routers/resources.py",
+    "handler": "get_file_meta",
+    "policy": "A private file may be downloaded or viewed only by its owner. A public file may be downloaded or viewed by any authenticated user. A file may be deleted only by its owner. Users may list their own files."
+  },
+  {
+    "item_id": "campus:e23",
+    "method": "DELETE",
+    "path": "/files/{file_id}",
+    "file": "app/routers/resources.py",
+    "handler": "delete_file",
+    "policy": "A private file may be downloaded or viewed only by its owner. A public file may be downloaded or viewed by any authenticated user. A file may be deleted only by its owner. Users may list their own files."
+  },
+  {
+    "item_id": "campus:e24",
+    "method": "GET",
+    "path": "/appointments/{appointment_id}",
+    "file": "app/routers/resources.py",
+    "handler": "get_appointment",
+    "policy": "An appointment may be viewed or changed only by the users who take part in it (its student or its professor)."
+  },
+  {
+    "item_id": "campus:e25",
+    "method": "PATCH",
+    "path": "/appointments/{appointment_id}",
+    "file": "app/routers/resources.py",
+    "handler": "patch_appointment",
+    "policy": "An appointment may be viewed or changed only by the users who take part in it (its student or its professor)."
+  }
+]

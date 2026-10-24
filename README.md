@@ -56,6 +56,35 @@ python3 -m idor_ctx.evaluate runs/<run_id>   # → summary.md, metrics.csv, metr
 - `runs/smoke_*`: 2사례 스모크 실행 (흐름 확인용, 분석에는 쓰지 않음)
 - 회의용 정리: `회의자료.md`
 
+## 엔드포인트 실험 (ADR 0006)
+같은 연구 질문을 웹 API 엔드포인트 단위, 여러 파일 코드베이스에서 다시 실험한다. 함수 단위 실험(위)과 코드·결과가 섞이지 않는다.
+
+```
+scripts/build_bench.py         원본 저장소 → bench/ 재생성 (주석·docstring 제거, VAmPI 스위치 접기)
+bench_src/                     추가 엔드포인트, 엔드포인트 목록·정책, 실행 테스트 원본
+bench/<이름>/                   모델 입력 코드 + endpoints.json (campus, vampi_vuln, vampi_secure)
+ground_truth/endpoints.json    엔드포인트 정답표 (예측 단계에서 읽지 않음)
+idor_ctx/ep_extract.py         여러 파일 호출 그래프 (from-import, Depends 간선)
+idor_ctx/ep_predict.py         예측 실행 → runs/ep_<run_id>/
+```
+
+```bash
+# 0) bench 재생성 (원본 위치: ../idor-test-codebase-main, ../VAmPI-master)
+python3 scripts/build_bench.py
+# 1) 라벨과 실제 동작 확인 (bench 앱 의존성이 필요해서 .venv 사용, 벤치별로 따로 실행)
+uv venv -p 3.11 .venv && uv pip install -p .venv/bin/python -r requirements-bench.txt
+(cd bench/campus && ../../.venv/bin/python -m pytest -q tests)
+(cd bench/vampi_vuln && ../../.venv/bin/python -m pytest -q tests)
+(cd bench/vampi_secure && ../../.venv/bin/python -m pytest -q tests)
+# 2) 예측과 평가
+python3 -m idor_ctx.ep_predict --model qwen2.5:7b --repeats 3
+python3 -m idor_ctx.evaluate runs/ep_<run_id> --labels ground_truth/endpoints.json
+```
+
+- 조건: A_full(앱 전체) / B_handler(핸들러만) / C_depth1 / D_depth2. 시스템 프롬프트와 생성 설정은 함수 단위 실험과 같고, 사용자 프롬프트에 ENDPOINT 줄만 더했다(ep-v1).
+- 항목: campus 25개(원본 17개 + 위임형 8개), VAmPI 빌드마다 7개(P1·P2는 vuln/secure 짝, boundary 2개는 주 지표에서 제외).
+- `requirements-bench.txt`는 두 원본의 핀을 따른다. 한 venv에 같이 설치하려고 sqlalchemy를 2.0.2로 맞췄고, flask 2.2와 맞도록 werkzeug를 2.2.2로 고정했다.
+
 ## 한계 (구현 범위 밖)
 - import 추적, 메서드·클래스 타입 추론, 동적 호출, 데코레이터, 중첩 함수 분리, 전역 변수와 클래스 정의 추출은 지원하지 않는다. B~D 조건에는 전역 데이터가 들어가지 않는다.
 - 파일 하나만 다룬다. 웹 프레임워크 라우팅이나 세션 처리는 다루지 않는다.

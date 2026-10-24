@@ -1,0 +1,58 @@
+[
+  {
+    "item_id": "vampi_vuln:e01",
+    "method": "GET",
+    "path": "/books/v1/{book_title}",
+    "file": "api_views/books.py",
+    "handler": "get_by_title",
+    "policy": "Each book belongs to the user who added it. Only the owner of a book may view its secret. A new book is owned by the user who adds it."
+  },
+  {
+    "item_id": "vampi_vuln:e02",
+    "method": "PUT",
+    "path": "/users/v1/{username}/password",
+    "file": "api_views/users.py",
+    "handler": "update_password",
+    "policy": "A user may change only their own password."
+  },
+  {
+    "item_id": "vampi_vuln:e03",
+    "method": "PUT",
+    "path": "/users/v1/{username}/email",
+    "file": "api_views/users.py",
+    "handler": "update_email",
+    "policy": "A user may change only their own email address."
+  },
+  {
+    "item_id": "vampi_vuln:e04",
+    "method": "DELETE",
+    "path": "/users/v1/{username}",
+    "file": "api_views/users.py",
+    "handler": "delete_user",
+    "policy": "Only admins may delete users. An admin may delete any user."
+  },
+  {
+    "item_id": "vampi_vuln:e05",
+    "method": "POST",
+    "path": "/books/v1",
+    "file": "api_views/books.py",
+    "handler": "add_new_book",
+    "policy": "Each book belongs to the user who added it. Only the owner of a book may view its secret. A new book is owned by the user who adds it."
+  },
+  {
+    "item_id": "vampi_vuln:e06",
+    "method": "GET",
+    "path": "/users/v1/{username}",
+    "file": "api_views/users.py",
+    "handler": "get_by_username",
+    "policy": "Anyone, including unauthenticated visitors, may view the username and email of any user. Passwords and admin flags of other users must not be disclosed."
+  },
+  {
+    "item_id": "vampi_vuln:e07",
+    "method": "GET",
+    "path": "/users/v1/_debug",
+    "file": "api_views/users.py",
+    "handler": "debug",
+    "policy": "Anyone, including unauthenticated visitors, may view the username and email of any user. Passwords and admin flags of other users must not be disclosed."
+  }
+]

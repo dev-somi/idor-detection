@@ -1,0 +1,4 @@
+case_id,type,expected,A_full,B_handler,C_depth1,D_depth2
+campus:e20,추가: depth2 헬퍼가 정책과 다른 기준(학과)을 검사,vulnerable,no_issue_found,insufficient_context (코드부족),vulnerable (코드부족),vulnerable
+campus:e23,추가: 검사 함수 반환값 무시,vulnerable,no_issue_found,no_issue_found (코드부족),no_issue_found,no_issue_found
+vampi_secure:e01,P1 짝,not_vulnerable,vulnerable,vulnerable (코드부족),vulnerable,vulnerable
