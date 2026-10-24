@@ -1,0 +1,170 @@
+{
+  "run_id": "ep_20261024-175913_qwen3-8b",
+  "experiment": "endpoint",
+  "started_at": "2026-10-24T17:59:13",
+  "model": {
+    "model": "qwen3:8b",
+    "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "format": "gguf",
+    "family": "qwen3",
+    "parameter_size": "8.2B",
+    "quantization_level": "Q4_K_M",
+    "model_context_length": 40960
+  },
+  "machine": {
+    "os": "macOS-26.5.1-arm64-arm-64bit",
+    "cpu": "Apple M5",
+    "gpu": "Chipset Model: Apple M5\n Total Number of Cores: 10",
+    "ram_gb": 16.0,
+    "python": "3.11.15",
+    "ollama_server_version": "0.40.9"
+  },
+  "generation_options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_ctx": 16384,
+    "num_predict": 768
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "verdict": {
+        "type": "string",
+        "enum": [
+          "vulnerable",
+          "no_issue_found",
+          "insufficient_context"
+        ]
+      },
+      "evidence": {
+        "type": "string"
+      },
+      "missing_context": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "verdict",
+      "evidence",
+      "missing_context"
+    ]
+  },
+  "prompt_version": "ep-v1",
+  "system_prompt": "You review Python code for object-level authorization (access control on a specific object).\nYou are given an access policy, the name of a target function, and some source code.\nDecide whether the target function, as written, lets a requester obtain or disclose an object's data in a way the policy forbids.\n\nRules:\n- Judge only from the code shown. Do not assume authorization logic that is not visible.\n- An `if` statement, or a name containing words such as \"owner\", \"check\", \"guard\" or \"auth\", is not evidence by itself. Confirm what is actually compared, with which values, and what happens when the comparison fails.\n- A call whose return value is ignored does not block anything unless the called code itself raises or stops execution.\n- Data that is returned, yielded, written, appended or sent before a failing check has already been disclosed.\n- If deciding requires code that is not shown (for example a called function whose body is missing), answer \"insufficient_context\" and name what is missing.\n- If the policy allows the access, it is not a problem.\n\nVerdict values:\n- \"vulnerable\": the visible code lets a requester access or disclose data against the policy.\n- \"no_issue_found\": the visible code enforces the policy for the target function.\n- \"insufficient_context\": the decision depends on code that is not shown.\n\nReply with JSON only: {\"verdict\": ..., \"evidence\": ..., \"missing_context\": [...]}.\n\"evidence\" quotes the relevant code lines and explains them briefly. \"missing_context\" lists the missing information (empty list if none).",
+  "conditions": [
+    "A_full",
+    "B_handler",
+    "C_depth1",
+    "D_depth2"
+  ],
+  "benches": [
+    "campus",
+    "vampi_vuln",
+    "vampi_secure"
+  ],
+  "input_files": {
+    "campus": [
+      "app/__init__.py",
+      "app/auth.py",
+      "app/database.py",
+      "app/dependencies.py",
+      "app/main.py",
+      "app/models.py",
+      "app/routers/__init__.py",
+      "app/routers/academics.py",
+      "app/routers/admin.py",
+      "app/routers/appointments.py",
+      "app/routers/assignments.py",
+      "app/routers/clubs.py",
+      "app/routers/courses.py",
+      "app/routers/files.py",
+      "app/routers/resources.py",
+      "app/routers/users.py",
+      "app/schemas.py",
+      "app/seed.py",
+      "app/services/__init__.py",
+      "app/services/access.py",
+      "app/services/records.py"
+    ],
+    "vampi_vuln": [
+      "api_views/__init__.py",
+      "api_views/books.py",
+      "api_views/json_schemas.py",
+      "api_views/main.py",
+      "api_views/users.py",
+      "app.py",
+      "config.py",
+      "models/__init__.py",
+      "models/books_model.py",
+      "models/user_model.py"
+    ],
+    "vampi_secure": [
+      "api_views/__init__.py",
+      "api_views/books.py",
+      "api_views/json_schemas.py",
+      "api_views/main.py",
+      "api_views/users.py",
+      "app.py",
+      "config.py",
+      "models/__init__.py",
+      "models/books_model.py",
+      "models/user_model.py"
+    ]
+  },
+  "codebase_index_seconds": {
+    "campus": 0.008198999999876833,
+    "vampi_vuln": 0.0031597500001225853,
+    "vampi_secure": 0.003068999998504296
+  },
+  "repeats": 3,
+  "single_run": false,
+  "cases": [
+    "campus:e01",
+    "campus:e02",
+    "campus:e03",
+    "campus:e04",
+    "campus:e05",
+    "campus:e06",
+    "campus:e07",
+    "campus:e08",
+    "campus:e09",
+    "campus:e10",
+    "campus:e11",
+    "campus:e12",
+    "campus:e13",
+    "campus:e14",
+    "campus:e15",
+    "campus:e16",
+    "campus:e17",
+    "campus:e18",
+    "campus:e19",
+    "campus:e20",
+    "campus:e21",
+    "campus:e22",
+    "campus:e23",
+    "campus:e24",
+    "campus:e25",
+    "vampi_vuln:e01",
+    "vampi_vuln:e02",
+    "vampi_vuln:e03",
+    "vampi_vuln:e04",
+    "vampi_vuln:e05",
+    "vampi_vuln:e06",
+    "vampi_vuln:e07",
+    "vampi_secure:e01",
+    "vampi_secure:e02",
+    "vampi_secure:e03",
+    "vampi_secure:e04",
+    "vampi_secure:e05",
+    "vampi_secure:e06",
+    "vampi_secure:e07"
+  ],
+  "model_loading": {
+    "load_duration_s": 3.231084375,
+    "warmup_wall_s": 3.622646582998641
+  },
+  "finished_at": "2026-10-24T20:11:13"
+}
