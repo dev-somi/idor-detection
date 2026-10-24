@@ -1,0 +1,49 @@
+case_id,condition,target,included,excluded_by_depth,unresolved_non_builtin,code_chars,prompt_chars,extract_ms,needed_code_included
+case_01,A_full,get_record,<entire file>,,,1182,2966,0.1662,True
+case_01,B_depth0,get_record,get_record,load_record normalize_id to_view,,118,2204,0.9921,False
+case_01,C_depth1,get_record,normalize_id load_record to_view get_record,,raw.strip().lower raw.strip RECORDS.get,403,2591,0.6497,True
+case_01,D_depth2,get_record,normalize_id load_record to_view get_record,,raw.strip().lower raw.strip RECORDS.get,403,2591,0.636,True
+case_02,A_full,fetch_invoice,<entire file>,,,1172,2962,0.0936,True
+case_02,B_depth0,fetch_invoice,fetch_invoice,_load _render,,192,2203,0.5742,True
+case_02,C_depth1,fetch_invoice,_load _render fetch_invoice,,INVOICES.get,427,2400,0.564,True
+case_02,D_depth2,fetch_invoice,_load _render fetch_invoice,,INVOICES.get,427,2400,0.5722,True
+case_03,A_full,read_message,<entire file>,,,1161,2949,0.0883,True
+case_03,B_depth0,read_message,read_message,_lookup _ensure_owner _present,,148,2236,0.6249,False
+case_03,C_depth1,read_message,_lookup _ensure_owner _present read_message,,MESSAGES.get,519,2492,0.6133,True
+case_03,D_depth2,read_message,_lookup _ensure_owner _present read_message,,MESSAGES.get,519,2492,0.606,True
+case_04,A_full,order_detail,<entire file>,,,1260,3074,0.104,True
+case_04,B_depth0,order_detail,order_detail,_guard _get_order _shape,,122,2230,0.6867,False
+case_04,C_depth1,order_detail,_get_order _guard _shape order_detail,_require_match,ORDERS.get,455,2532,0.6914,False
+case_04,D_depth2,order_detail,_get_order _require_match _guard _shape order_detail,,ORDERS.get,567,2567,0.6727,True
+case_05,A_full,view_product,<entire file>,,,1225,3061,0.0937,True
+case_05,B_depth0,view_product,view_product,_find _card,,102,2157,0.6428,False
+case_05,C_depth1,view_product,_find _card view_product,,PRODUCTS.get,345,2364,0.6799,True
+case_05,D_depth2,view_product,_find _card view_product,,PRODUCTS.get,345,2364,0.6143,True
+case_06,A_full,download_document,<entire file>,,,1097,2892,0.0932,True
+case_06,B_depth0,download_document,download_document,_read is_owner _payload,,141,2229,0.611,False
+case_06,C_depth1,download_document,_read is_owner _payload download_document,,DOCUMENTS.get,462,2441,0.5974,True
+case_06,D_depth2,download_document,_read is_owner _payload download_document,,DOCUMENTS.get,462,2441,0.5946,True
+case_07,A_full,export_report,<entire file>,,,1011,2851,0.0848,True
+case_07,B_depth0,export_report,export_report,_get _serialize,channel.append HISTORY.append,283,2566,0.5152,False
+case_07,C_depth1,export_report,_get _serialize export_report,,REPORTS.get channel.append HISTORY.append,499,2740,0.5092,True
+case_07,D_depth2,export_report,_get _serialize export_report,,REPORTS.get channel.append HISTORY.append,499,2740,0.5032,True
+case_08,A_full,open_entry,<entire file>,,,1135,2918,0.0888,True
+case_08,B_depth0,open_entry,open_entry,_fetch,entry.get,326,2363,0.5064,False
+case_08,C_depth1,open_entry,_fetch open_entry,,ENTRIES.get entry.get,459,2527,0.501,True
+case_08,D_depth2,open_entry,_fetch open_entry,,ENTRIES.get entry.get,459,2527,0.4974,True
+case_09,A_full,show_note,<entire file>,,,1119,2898,0.0985,True
+case_09,B_depth0,show_note,show_note,_note _can_view,,183,2185,0.5655,False
+case_09,C_depth1,show_note,_note _can_view show_note,,NOTES.get USERS.get,459,2519,0.5632,True
+case_09,D_depth2,show_note,_note _can_view show_note,,NOTES.get USERS.get,459,2519,0.5696,True
+case_10,A_full,get_file,<entire file>,,,1257,3136,0.1024,True
+case_10,B_depth0,get_file,get_file,_file _authorize,,132,2235,0.6788,False
+case_10,C_depth1,get_file,_file _authorize get_file,_root_owner,FILES.get,389,2522,0.6677,False
+case_10,D_depth2,get_file,_file _root_owner _authorize get_file,,FILES.get,559,2618,0.6688,True
+case_11,A_full,photo_meta,<entire file>,,,980,2794,0.077,True
+case_11,B_depth0,photo_meta,photo_meta,_photo,ACL.allows,228,2297,0.3754,False
+case_11,C_depth1,photo_meta,_photo photo_meta,,PHOTOS.get ACL.allows,360,2459,0.3692,False
+case_11,D_depth2,photo_meta,_photo photo_meta,,PHOTOS.get ACL.allows,360,2459,0.4145,False
+case_12,A_full,ticket_detail,<entire file>,,,1241,3028,0.1062,True
+case_12,B_depth0,ticket_detail,ticket_detail,_prepare,,159,2100,0.6472,False
+case_12,C_depth1,ticket_detail,_prepare ticket_detail,_load_ticket _validate,AUDIT.append,335,2455,0.6453,False
+case_12,D_depth2,ticket_detail,_load_ticket _validate _prepare ticket_detail,_match_owner,TICKETS.get AUDIT.append,652,2806,0.6278,False

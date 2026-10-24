@@ -1,0 +1,13 @@
+case_id,type,expected,A_full,B_depth0,C_depth1,D_depth2
+case_01,"소유자 전용, 인가 검사 없음",vulnerable,vulnerable/vulnerable/vulnerable,insufficient_context/insufficient_context/insufficient_context (코드부족),vulnerable/vulnerable/vulnerable,vulnerable/vulnerable/vulnerable
+case_02,함수 안에서 올바른 소유권 검사,not_vulnerable,no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found
+case_03,보조 함수(1단계) 안에서 검사,not_vulnerable,no_issue_found/no_issue_found/no_issue_found,insufficient_context/insufficient_context/insufficient_context (코드부족),no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found
+case_04,두 단계 보조 함수 안에서 검사,not_vulnerable,no_issue_found/no_issue_found/no_issue_found,insufficient_context/insufficient_context/insufficient_context (코드부족),no_issue_found/no_issue_found/no_issue_found (코드부족),no_issue_found/no_issue_found/no_issue_found
+case_05,"공개 조회 허용, 소유권 검사 불필요",not_vulnerable,no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found (코드부족),no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found
+case_06,검사 함수를 호출하지만 반환값을 무시,vulnerable,vulnerable/vulnerable/vulnerable,vulnerable/vulnerable/vulnerable (코드부족),no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found
+case_07,정보를 내보낸 뒤에 검사,vulnerable,no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found (코드부족),no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found
+case_08,if문과 owner 이름은 있지만 요청자와 비교하지 않음,vulnerable,vulnerable/vulnerable/vulnerable,vulnerable/vulnerable/vulnerable (코드부족),vulnerable/vulnerable/vulnerable,vulnerable/vulnerable/vulnerable
+case_09,보조 함수가 정책과 다른 조건(조직)을 검사,vulnerable,no_issue_found/no_issue_found/no_issue_found,vulnerable/vulnerable/vulnerable (코드부족),no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found
+case_10,재귀(순환) 호출을 포함한 2단계 검사,not_vulnerable,no_issue_found/no_issue_found/no_issue_found,insufficient_context/insufficient_context/insufficient_context (코드부족),vulnerable/vulnerable/vulnerable (코드부족),no_issue_found/no_issue_found/no_issue_found
+case_11,검사가 클래스 메서드에 있음(추출기 미지원 범위),not_vulnerable,no_issue_found/no_issue_found/no_issue_found,no_issue_found/no_issue_found/no_issue_found (코드부족),no_issue_found/no_issue_found/no_issue_found (코드부족),no_issue_found/no_issue_found/no_issue_found (코드부족)
+case_12,3단계 깊이의 검사(depth 2 밖),not_vulnerable,no_issue_found/no_issue_found/no_issue_found,vulnerable/vulnerable/vulnerable (코드부족),vulnerable/vulnerable/vulnerable (코드부족),vulnerable/vulnerable/vulnerable (코드부족)

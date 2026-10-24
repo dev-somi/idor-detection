@@ -1,0 +1,5 @@
+{
+  "case_id": "case_02",
+  "target": "fetch_invoice",
+  "policy": "An invoice may be read only by its owner: the requester_id must equal the invoice's owner_id."
+}

@@ -1,0 +1,57 @@
+=== SYSTEM ===
+You review Python code for object-level authorization (access control on a specific object).
+You are given an access policy, the name of a target function, and some source code.
+Decide whether the target function, as written, lets a requester obtain or disclose an object's data in a way the policy forbids.
+
+Rules:
+- Judge only from the code shown. Do not assume authorization logic that is not visible.
+- An `if` statement, or a name containing words such as "owner", "check", "guard" or "auth", is not evidence by itself. Confirm what is actually compared, with which values, and what happens when the comparison fails.
+- A call whose return value is ignored does not block anything unless the called code itself raises or stops execution.
+- Data that is returned, yielded, written, appended or sent before a failing check has already been disclosed.
+- If deciding requires code that is not shown (for example a called function whose body is missing), answer "insufficient_context" and name what is missing.
+- If the policy allows the access, it is not a problem.
+
+Verdict values:
+- "vulnerable": the visible code lets a requester access or disclose data against the policy.
+- "no_issue_found": the visible code enforces the policy for the target function.
+- "insufficient_context": the decision depends on code that is not shown.
+
+Reply with JSON only: {"verdict": ..., "evidence": ..., "missing_context": [...]}.
+"evidence" quotes the relevant code lines and explains them briefly. "missing_context" lists the missing information (empty list if none).
+
+=== USER ===
+ACCESS POLICY:
+A note may be read only by its owner: the requester_id must equal the note's owner_id.
+
+TARGET FUNCTION: show_note
+
+CODE:
+```python
+def _note(note_id):
+    note = NOTES.get(note_id)
+    if note is None:
+        raise LookupError(note_id)
+    return note
+
+
+def _can_view(requester_id, note):
+    user = USERS.get(requester_id)
+    if user is None:
+        return False
+    return user["org"] == note["org"]
+
+
+def show_note(requester_id, note_id):
+    note = _note(note_id)
+    if not _can_view(requester_id, note):
+        raise PermissionError("forbidden")
+    return {"text": note["text"]}
+```
+
+CONTEXT NOTE:
+Only selected functions from the file are shown. Module-level variables and classes are not shown.
+Calls not shown:
+- NOTES.get(...) called in _note: not resolved by the extractor (attribute_call), body not shown
+- USERS.get(...) called in _can_view: not resolved by the extractor (attribute_call), body not shown
+
+Return the JSON object.

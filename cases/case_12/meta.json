@@ -1,0 +1,5 @@
+{
+  "case_id": "case_12",
+  "target": "ticket_detail",
+  "policy": "A ticket may be read only by its owner: the requester_id must equal the ticket's owner_id."
+}

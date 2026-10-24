@@ -1,0 +1,5 @@
+{
+  "case_id": "case_07",
+  "target": "export_report",
+  "policy": "A report's figures may be disclosed (returned, or written to the channel) only to its owner: the requester_id must equal the report's owner_id."
+}

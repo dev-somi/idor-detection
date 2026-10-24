@@ -1,0 +1,5 @@
+{
+  "case_id": "case_11",
+  "target": "photo_meta",
+  "policy": "Photo metadata, including the location, may be read only by its owner: the requester_id must equal the photo's owner_id."
+}

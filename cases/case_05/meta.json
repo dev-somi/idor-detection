@@ -1,0 +1,5 @@
+{
+  "case_id": "case_05",
+  "target": "view_product",
+  "policy": "Product cards (name and description) are public: any requester may view any product. Changing stock is allowed only for the product's owner."
+}

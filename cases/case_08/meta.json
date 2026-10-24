@@ -1,0 +1,5 @@
+{
+  "case_id": "case_08",
+  "target": "open_entry",
+  "policy": "An entry may be read only by its owner: the requester_id must equal the entry's owner_id."
+}

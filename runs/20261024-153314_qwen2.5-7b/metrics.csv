@@ -1,0 +1,5 @@
+condition,n,TP,FP,FN,TN,precision,recall,accuracy,decided,insufficient_context,parse_error,decidable_ratio,cons_TP,cons_FP,cons_FN,cons_TN,cons_precision,cons_recall,extraction_sufficient,no_issue_without_needed_code,decided_with_missing_context,cases_consistent_across_repeats,context_overflow,mean_prompt_tokens,mean_code_chars,mean_extract_ms,mean_inference_s,total_inference_s,mean_output_tokens
+A_full,36,9,0,6,21,1.000000,0.600000,0.833333,36,0,0,1.000000,9,0,6,21,1.000000,0.600000,36,0,0,12/12,0,707.333333,1153.333333,0.537124,2.913056,104.870000,59.333333
+B_depth0,36,9,3,3,9,0.750000,0.750000,0.750000,24,12,0,0.666667,12,12,3,9,0.500000,0.800000,3,9,15,12/12,0,501.416667,177.833333,2.828314,2.384547,85.843680,55.416667
+C_depth1,36,6,6,9,15,0.500000,0.400000,0.583333,36,0,0,1.000000,6,6,9,15,0.500000,0.400000,24,6,12,12/12,0,559.333333,426,2.695337,2.665493,95.957763,58.666667
+D_depth2,36,6,3,9,18,0.666667,0.400000,0.666667,36,0,0,1.000000,6,3,9,18,0.666667,0.400000,30,3,9,12/12,0,568.583333,475.916667,2.938465,2.359943,84.957962,57.166667

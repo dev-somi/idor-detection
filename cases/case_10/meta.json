@@ -1,0 +1,5 @@
+{
+  "case_id": "case_10",
+  "target": "get_file",
+  "policy": "A file may be read only by the owner of the root folder that contains it (follow parent folders up to the folder whose parent is None); that folder's owner_id must equal the requester_id."
+}

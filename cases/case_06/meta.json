@@ -1,0 +1,5 @@
+{
+  "case_id": "case_06",
+  "target": "download_document",
+  "policy": "A document may be read only by its owner: the requester_id must equal the document's owner_id."
+}

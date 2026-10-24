@@ -1,0 +1,83 @@
+=== SYSTEM ===
+You review Python code for object-level authorization (access control on a specific object).
+You are given an access policy, the name of a target function, and some source code.
+Decide whether the target function, as written, lets a requester obtain or disclose an object's data in a way the policy forbids.
+
+Rules:
+- Judge only from the code shown. Do not assume authorization logic that is not visible.
+- An `if` statement, or a name containing words such as "owner", "check", "guard" or "auth", is not evidence by itself. Confirm what is actually compared, with which values, and what happens when the comparison fails.
+- A call whose return value is ignored does not block anything unless the called code itself raises or stops execution.
+- Data that is returned, yielded, written, appended or sent before a failing check has already been disclosed.
+- If deciding requires code that is not shown (for example a called function whose body is missing), answer "insufficient_context" and name what is missing.
+- If the policy allows the access, it is not a problem.
+
+Verdict values:
+- "vulnerable": the visible code lets a requester access or disclose data against the policy.
+- "no_issue_found": the visible code enforces the policy for the target function.
+- "insufficient_context": the decision depends on code that is not shown.
+
+Reply with JSON only: {"verdict": ..., "evidence": ..., "missing_context": [...]}.
+"evidence" quotes the relevant code lines and explains them briefly. "missing_context" lists the missing information (empty list if none).
+
+=== USER ===
+ACCESS POLICY:
+A ticket may be read only by its owner: the requester_id must equal the ticket's owner_id.
+
+TARGET FUNCTION: ticket_detail
+
+CODE:
+```python
+TICKETS = {
+    "t1": {"owner_id": "alice", "status": "open", "detail": "alice-private-detail"},
+    "t2": {"owner_id": "bob", "status": "closed", "detail": "bob-private-detail"},
+}
+AUDIT = []
+
+
+def _load_ticket(ticket_id):
+    ticket = TICKETS.get(ticket_id)
+    if ticket is None:
+        raise LookupError(ticket_id)
+    return ticket
+
+
+def _match_owner(ticket, requester_id):
+    if ticket["owner_id"] != requester_id:
+        raise PermissionError("forbidden")
+
+
+def _validate(ticket, requester_id):
+    if ticket["status"] not in ("open", "closed"):
+        raise ValueError(ticket["status"])
+    _match_owner(ticket, requester_id)
+
+
+def _prepare(ticket_id, requester_id):
+    ticket = _load_ticket(ticket_id)
+    _validate(ticket, requester_id)
+    AUDIT.append((requester_id, ticket_id))
+    return ticket
+
+
+def ticket_detail(requester_id, ticket_id):
+    ticket = _prepare(ticket_id, requester_id)
+    return {"status": ticket["status"], "detail": ticket["detail"]}
+
+
+def open_tickets():
+    return [tid for tid, ticket in TICKETS.items() if ticket["status"] == "open"]
+
+
+def close_ticket(ticket_id):
+    _load_ticket(ticket_id)["status"] = "closed"
+    return TICKETS[ticket_id]["status"]
+
+
+def audit_size():
+    return len(AUDIT)
+```
+
+CONTEXT NOTE:
+The entire source file is shown.
+
+Return the JSON object.

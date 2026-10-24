@@ -1,0 +1,93 @@
+=== SYSTEM ===
+You review Python code for object-level authorization (access control on a specific object).
+You are given an access policy, the name of a target function, and some source code.
+Decide whether the target function, as written, lets a requester obtain or disclose an object's data in a way the policy forbids.
+
+Rules:
+- Judge only from the code shown. Do not assume authorization logic that is not visible.
+- An `if` statement, or a name containing words such as "owner", "check", "guard" or "auth", is not evidence by itself. Confirm what is actually compared, with which values, and what happens when the comparison fails.
+- A call whose return value is ignored does not block anything unless the called code itself raises or stops execution.
+- Data that is returned, yielded, written, appended or sent before a failing check has already been disclosed.
+- If deciding requires code that is not shown (for example a called function whose body is missing), answer "insufficient_context" and name what is missing.
+- If the policy allows the access, it is not a problem.
+
+Verdict values:
+- "vulnerable": the visible code lets a requester access or disclose data against the policy.
+- "no_issue_found": the visible code enforces the policy for the target function.
+- "insufficient_context": the decision depends on code that is not shown.
+
+Reply with JSON only: {"verdict": ..., "evidence": ..., "missing_context": [...]}.
+"evidence" quotes the relevant code lines and explains them briefly. "missing_context" lists the missing information (empty list if none).
+
+=== USER ===
+ACCESS POLICY:
+A file may be read only by the owner of the root folder that contains it (follow parent folders up to the folder whose parent is None); that folder's owner_id must equal the requester_id.
+
+TARGET FUNCTION: get_file
+
+CODE:
+```python
+FOLDERS = {
+    "root_a": {"parent": None, "owner_id": "alice"},
+    "sub_a": {"parent": "root_a", "owner_id": None},
+    "deep_a": {"parent": "sub_a", "owner_id": None},
+    "root_b": {"parent": None, "owner_id": "bob"},
+}
+FILES = {
+    "f1": {"folder": "deep_a", "data": "alice-private-data"},
+    "f2": {"folder": "root_b", "data": "bob-private-data"},
+}
+
+
+def _file(file_id):
+    item = FILES.get(file_id)
+    if item is None:
+        raise LookupError(file_id)
+    return item
+
+
+def _root_owner(folder_id):
+    folder = FOLDERS[folder_id]
+    if folder["parent"] is None:
+        return folder["owner_id"]
+    return _root_owner(folder["parent"])
+
+
+def _authorize(requester_id, item):
+    if _root_owner(item["folder"]) != requester_id:
+        raise PermissionError("forbidden")
+
+
+def get_file(requester_id, file_id):
+    item = _file(file_id)
+    _authorize(requester_id, item)
+    return {"data": item["data"]}
+
+
+def _ping(n):
+    if n <= 0:
+        return 0
+    return _pong(n - 1) + 1
+
+
+def _pong(n):
+    if n <= 0:
+        return 0
+    return _ping(n - 1) + 1
+
+
+def folder_depth(folder_id):
+    parent = FOLDERS[folder_id]["parent"]
+    if parent is None:
+        return 0
+    return folder_depth(parent) + 1
+
+
+def bounce(n):
+    return _ping(n)
+```
+
+CONTEXT NOTE:
+The entire source file is shown.
+
+Return the JSON object.

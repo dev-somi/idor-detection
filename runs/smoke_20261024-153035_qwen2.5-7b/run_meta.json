@@ -1,0 +1,67 @@
+{
+  "run_id": "20261024-153035_qwen2.5-7b",
+  "started_at": "2026-10-24T15:30:35",
+  "model": {
+    "model": "qwen2.5:7b",
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "format": "gguf",
+    "family": "qwen2",
+    "parameter_size": "7.6B",
+    "quantization_level": "Q4_K_M",
+    "model_context_length": 32768
+  },
+  "machine": {
+    "os": "macOS-26.5.1-arm64-arm-64bit",
+    "cpu": "Apple M5",
+    "gpu": "Chipset Model: Apple M5\n Total Number of Cores: 10",
+    "ram_gb": 16.0,
+    "python": "3.11.15",
+    "ollama_server_version": "0.40.9"
+  },
+  "generation_options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_ctx": 16384,
+    "num_predict": 768
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "verdict": {
+        "type": "string",
+        "enum": [
+          "vulnerable",
+          "no_issue_found",
+          "insufficient_context"
+        ]
+      },
+      "evidence": {
+        "type": "string"
+      },
+      "missing_context": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "verdict",
+      "evidence",
+      "missing_context"
+    ]
+  },
+  "prompt_version": "v1",
+  "system_prompt": "You review Python code for object-level authorization (access control on a specific object).\nYou are given an access policy, the name of a target function, and some source code.\nDecide whether the target function, as written, lets a requester obtain or disclose an object's data in a way the policy forbids.\n\nRules:\n- Judge only from the code shown. Do not assume authorization logic that is not visible.\n- An `if` statement, or a name containing words such as \"owner\", \"check\", \"guard\" or \"auth\", is not evidence by itself. Confirm what is actually compared, with which values, and what happens when the comparison fails.\n- A call whose return value is ignored does not block anything unless the called code itself raises or stops execution.\n- Data that is returned, yielded, written, appended or sent before a failing check has already been disclosed.\n- If deciding requires code that is not shown (for example a called function whose body is missing), answer \"insufficient_context\" and name what is missing.\n- If the policy allows the access, it is not a problem.\n\nVerdict values:\n- \"vulnerable\": the visible code lets a requester access or disclose data against the policy.\n- \"no_issue_found\": the visible code enforces the policy for the target function.\n- \"insufficient_context\": the decision depends on code that is not shown.\n\nReply with JSON only: {\"verdict\": ..., \"evidence\": ..., \"missing_context\": [...]}.\n\"evidence\" quotes the relevant code lines and explains them briefly. \"missing_context\" lists the missing information (empty list if none).",
+  "repeats": 1,
+  "single_run": true,
+  "cases": [
+    "case_03",
+    "case_06"
+  ],
+  "model_loading": {
+    "load_duration_s": 1.809885708,
+    "warmup_wall_s": 2.149685500000487
+  },
+  "finished_at": "2026-10-24T15:31:00"
+}

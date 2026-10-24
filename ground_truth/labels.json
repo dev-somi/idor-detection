@@ -1,0 +1,101 @@
+{
+  "_note": "자체 제작 예제의 정답표. 예측 단계(idor_ctx/predict.py)에서 읽지 않는다. expected: vulnerable | not_vulnerable. required_functions: 판단을 근거 있게 내리려면 원문이 보여야 하는 함수(대상 함수 제외). out_of_scope: 추출기가 지원하지 않는 호출 대상 중 판단에 필요한 것. probe: tests/test_cases_behavior.py가 실제 실행으로 정답을 확인할 때 쓰는 호출. '$SINK'는 새 리스트로 바뀐다.",
+  "cases": {
+    "case_01": {
+      "type": "소유자 전용, 인가 검사 없음",
+      "expected": "vulnerable",
+      "reason": "get_record와 호출되는 load_record, normalize_id, to_view 어디에도 requester_id와 owner_id를 비교하는 코드가 없다. 다른 사용자의 body가 그대로 반환된다.",
+      "required_functions": ["normalize_id", "load_record", "to_view"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "r1"], "owner": ["alice", "r1"], "private_value": "alice-private-body", "attacker_allowed_by_policy": false}
+    },
+    "case_02": {
+      "type": "함수 안에서 올바른 소유권 검사",
+      "expected": "not_vulnerable",
+      "reason": "fetch_invoice가 반환하기 전에 invoice['owner_id'] != requester_id이면 PermissionError를 발생시킨다.",
+      "required_functions": [],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "i100"], "owner": ["alice", "i100"], "private_value": "alice-private-memo", "attacker_allowed_by_policy": false}
+    },
+    "case_03": {
+      "type": "보조 함수(1단계) 안에서 검사",
+      "expected": "not_vulnerable",
+      "reason": "read_message가 호출하는 _ensure_owner가 소유자가 아니면 PermissionError를 발생시킨다. depth 0에서는 _ensure_owner의 본문이 보이지 않는다.",
+      "required_functions": ["_ensure_owner"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "m1"], "owner": ["alice", "m1"], "private_value": "alice-private-text", "attacker_allowed_by_policy": false}
+    },
+    "case_04": {
+      "type": "두 단계 보조 함수 안에서 검사",
+      "expected": "not_vulnerable",
+      "reason": "order_detail → _guard → _require_match(order['owner_id'], requester_id)가 값이 다르면 PermissionError를 발생시킨다. 실제 비교는 2단계 함수에 있다.",
+      "required_functions": ["_guard", "_require_match"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "o1"], "owner": ["alice", "o1"], "private_value": "alice-private-address", "attacker_allowed_by_policy": false}
+    },
+    "case_05": {
+      "type": "공개 조회 허용, 소유권 검사 불필요",
+      "expected": "not_vulnerable",
+      "reason": "정책상 상품 카드(name, description)는 누구나 볼 수 있다. view_product는 그 두 필드만 반환한다(_card).",
+      "required_functions": ["_card"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "p1"], "owner": ["alice", "p1"], "private_value": "alice-listing-description", "attacker_allowed_by_policy": true}
+    },
+    "case_06": {
+      "type": "검사 함수를 호출하지만 반환값을 무시",
+      "expected": "vulnerable",
+      "reason": "is_owner는 bool을 반환할 뿐 예외를 던지지 않는다. download_document는 그 반환값을 쓰지 않고 문서를 반환한다.",
+      "required_functions": ["_read", "is_owner", "_payload"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "d1"], "owner": ["alice", "d1"], "private_value": "alice-private-content", "attacker_allowed_by_policy": false}
+    },
+    "case_07": {
+      "type": "정보를 내보낸 뒤에 검사",
+      "expected": "vulnerable",
+      "reason": "export_report는 channel.append(_serialize(report))로 figures를 먼저 내보내고, 그 뒤에 소유자를 검사한다. 예외가 발생해도 이미 channel에 정보가 들어가 있다.",
+      "required_functions": ["_get", "_serialize"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "rp1", "$SINK"], "owner": ["alice", "rp1", "$SINK"], "private_value": "alice-private-figures", "attacker_allowed_by_policy": false}
+    },
+    "case_08": {
+      "type": "if문과 owner 이름은 있지만 요청자와 비교하지 않음",
+      "expected": "vulnerable",
+      "reason": "open_entry는 owner_id가 존재하는지와 요청자가 활성 사용자인지만 확인한다. requester_id와 owner_id를 비교하지 않으므로 bob이 alice의 항목을 읽을 수 있다.",
+      "required_functions": ["_fetch"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "e1"], "owner": ["alice", "e1"], "private_value": "alice-private-entry", "attacker_allowed_by_policy": false}
+    },
+    "case_09": {
+      "type": "보조 함수가 정책과 다른 조건(조직)을 검사",
+      "expected": "vulnerable",
+      "reason": "_can_view는 같은 org인지만 비교한다. 정책은 소유자 전용이므로 같은 조직의 bob이 alice의 노트를 읽을 수 있다.",
+      "required_functions": ["_note", "_can_view"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "n1"], "owner": ["alice", "n1"], "private_value": "alice-private-note", "attacker_allowed_by_policy": false}
+    },
+    "case_10": {
+      "type": "재귀(순환) 호출을 포함한 2단계 검사",
+      "expected": "not_vulnerable",
+      "reason": "get_file → _authorize → _root_owner(재귀로 루트 폴더까지 이동)의 결과가 requester_id와 다르면 PermissionError를 발생시킨다.",
+      "required_functions": ["_authorize", "_root_owner"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "f1"], "owner": ["alice", "f1"], "private_value": "alice-private-data", "attacker_allowed_by_policy": false}
+    },
+    "case_11": {
+      "type": "검사가 클래스 메서드에 있음(추출기 미지원 범위)",
+      "expected": "not_vulnerable",
+      "reason": "photo_meta는 ACL.allows(...)가 False이면 PermissionError를 발생시키고, Acl.allows는 owner_id == requester_id를 비교한다. 메서드 호출은 추출기가 따라가지 않으므로 B/C/D에는 본문이 없다.",
+      "required_functions": [],
+      "out_of_scope": ["Acl.allows"],
+      "probe": {"attacker": ["bob", "ph1"], "owner": ["alice", "ph1"], "private_value": "alice-private-location", "attacker_allowed_by_policy": false}
+    },
+    "case_12": {
+      "type": "3단계 깊이의 검사(depth 2 밖)",
+      "expected": "not_vulnerable",
+      "reason": "ticket_detail → _prepare → _validate → _match_owner가 소유자가 아니면 PermissionError를 발생시킨다. 비교 코드는 depth 3에 있다.",
+      "required_functions": ["_prepare", "_validate", "_match_owner"],
+      "out_of_scope": [],
+      "probe": {"attacker": ["bob", "t1"], "owner": ["alice", "t1"], "private_value": "alice-private-detail", "attacker_allowed_by_policy": false}
+    }
+  }
+}

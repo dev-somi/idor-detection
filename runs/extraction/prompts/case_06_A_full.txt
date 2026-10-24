@@ -1,0 +1,80 @@
+=== SYSTEM ===
+You review Python code for object-level authorization (access control on a specific object).
+You are given an access policy, the name of a target function, and some source code.
+Decide whether the target function, as written, lets a requester obtain or disclose an object's data in a way the policy forbids.
+
+Rules:
+- Judge only from the code shown. Do not assume authorization logic that is not visible.
+- An `if` statement, or a name containing words such as "owner", "check", "guard" or "auth", is not evidence by itself. Confirm what is actually compared, with which values, and what happens when the comparison fails.
+- A call whose return value is ignored does not block anything unless the called code itself raises or stops execution.
+- Data that is returned, yielded, written, appended or sent before a failing check has already been disclosed.
+- If deciding requires code that is not shown (for example a called function whose body is missing), answer "insufficient_context" and name what is missing.
+- If the policy allows the access, it is not a problem.
+
+Verdict values:
+- "vulnerable": the visible code lets a requester access or disclose data against the policy.
+- "no_issue_found": the visible code enforces the policy for the target function.
+- "insufficient_context": the decision depends on code that is not shown.
+
+Reply with JSON only: {"verdict": ..., "evidence": ..., "missing_context": [...]}.
+"evidence" quotes the relevant code lines and explains them briefly. "missing_context" lists the missing information (empty list if none).
+
+=== USER ===
+ACCESS POLICY:
+A document may be read only by its owner: the requester_id must equal the document's owner_id.
+
+TARGET FUNCTION: download_document
+
+CODE:
+```python
+DOCUMENTS = {
+    "d1": {"owner_id": "alice", "name": "contract", "content": "alice-private-content"},
+    "d2": {"owner_id": "bob", "name": "resume", "content": "bob-private-content"},
+}
+TAGS = {"d1": ["legal"], "d2": ["career"]}
+
+
+def _read(doc_id):
+    document = DOCUMENTS.get(doc_id)
+    if document is None:
+        raise LookupError(doc_id)
+    return document
+
+
+def is_owner(requester_id, document):
+    return document["owner_id"] == requester_id
+
+
+def _payload(document):
+    return {"name": document["name"], "content": document["content"]}
+
+
+def download_document(requester_id, doc_id):
+    document = _read(doc_id)
+    is_owner(requester_id, document)
+    return _payload(document)
+
+
+def tag_document(doc_id, tag):
+    TAGS.setdefault(doc_id, [])
+    if tag not in TAGS[doc_id]:
+        TAGS[doc_id].append(tag)
+    return TAGS[doc_id]
+
+
+def documents_with_tag(tag):
+    return [doc_id for doc_id, tags in TAGS.items() if tag in tags]
+
+
+def name_length(doc_id):
+    return len(_read(doc_id)["name"])
+
+
+def all_names():
+    return [document["name"] for document in DOCUMENTS.values()]
+```
+
+CONTEXT NOTE:
+The entire source file is shown.
+
+Return the JSON object.

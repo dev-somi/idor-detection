@@ -1,0 +1,5 @@
+{
+  "case_id": "case_04",
+  "target": "order_detail",
+  "policy": "Order details, including the address, may be read only by its owner: the requester_id must equal the order's owner_id."
+}

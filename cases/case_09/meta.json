@@ -1,0 +1,5 @@
+{
+  "case_id": "case_09",
+  "target": "show_note",
+  "policy": "A note may be read only by its owner: the requester_id must equal the note's owner_id."
+}
