@@ -24,11 +24,23 @@ INPUT_GLOBS = {
 }
 
 
-def input_files(bench_dir):
-    """벤치 디렉터리에서 모델 입력이 되는 .py 경로(상대 경로 문자열) 목록을 정렬해서 돌려준다."""
+# 외부 소스(globs를 직접 준 경우)에서 모델 입력으로 쓰지 않는 디렉터리 이름
+EXTERNAL_EXCLUDE_DIRS = {"tests", "test", ".venv", "venv", "env", "migrations", "node_modules",
+                         "site-packages", "__pycache__", ".git"}
+
+
+def input_files(bench_dir, globs=None):
+    """벤치 디렉터리에서 모델 입력이 되는 .py 경로(상대 경로 문자열) 목록을 정렬해서 돌려준다.
+
+    globs를 주면 벤치 이름 규칙 대신 그 패턴을 쓰고, EXTERNAL_EXCLUDE_DIRS 아래 파일은 뺀다 (외부 소스용).
+    """
     bench_dir = Path(bench_dir)
-    globs = INPUT_GLOBS.get(bench_dir.name.split("_")[0], ["**/*.py"])  # vampi_vuln → vampi, 그 밖은 전체
+    external = globs is not None
+    if not external:
+        globs = INPUT_GLOBS.get(bench_dir.name.split("_")[0], ["**/*.py"])  # vampi_vuln → vampi, 그 밖은 전체
     files = {p.relative_to(bench_dir).as_posix() for g in globs for p in bench_dir.glob(g)}
+    if external:
+        files = {f for f in files if not EXTERNAL_EXCLUDE_DIRS.intersection(f.split("/")[:-1])}
     return sorted(files)
 
 
@@ -51,12 +63,19 @@ def _resolve_from(module, node):
 class Codebase:
     """벤치 하나의 함수 색인. functions: {'모듈.함수': FunctionInfo}, files: {상대경로: 원문}."""
 
-    def __init__(self, bench_dir):
+    def __init__(self, bench_dir, globs=None):
         self.bench_dir = Path(bench_dir)
-        self.files = {rel: (self.bench_dir / rel).read_text() for rel in input_files(bench_dir)}
+        self.files = {rel: (self.bench_dir / rel).read_text(errors="replace") for rel in input_files(bench_dir, globs)}
         self.functions, self.warnings = {}, []
         self.func_file = {}
-        trees = {rel: ast.parse(src) for rel, src in self.files.items()}
+        trees = {}
+        for rel, src in list(self.files.items()):
+            try:
+                trees[rel] = ast.parse(src)
+            except SyntaxError as exc:
+                self.warnings.append(f"syntax error in {rel}: skipped ({exc.msg}, line {exc.lineno})")
+                del self.files[rel]
+        self.trees = trees  # route_map이 데코레이터를 읽을 때 다시 쓴다
         defs_by_module = {}
         for rel, tree in trees.items():
             defs_by_module[_module_name(rel)] = [n.name for n in tree.body

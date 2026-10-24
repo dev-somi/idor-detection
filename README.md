@@ -85,6 +85,15 @@ python3 -m idor_ctx.evaluate runs/ep_<run_id> --labels ground_truth/endpoints.js
 - 항목: campus 25개(원본 17개 + 위임형 8개), VAmPI 빌드마다 7개(P1·P2는 vuln/secure 짝, boundary 2개는 주 지표에서 제외).
 - `requirements-bench.txt`는 두 원본의 핀을 따른다. 한 venv에 같이 설치하려고 sqlalchemy를 2.0.2로 맞췄고, flask 2.2와 맞도록 werkzeug를 2.2.2로 고정했다.
 
+## SecureVibe 연동용 코드 심사 CLI (ADR 0007)
+[SecureVibe(dev-somi/idor-explainable-web)](https://github.com/dev-somi/idor-explainable-web)가 subprocess로 부르는 입구다. SecureVibe는 HTTP 동적 검증 결과와 이 판정을 따로 받아 취합해 보고서로 보여 주는 웹 도구다. 이 저장소를 복사하지 않고 별도 체크아웃 경로를 입력받아 실행한다. 외부 소스 폴더와 후보 목록을 받아 후보별 판정을 낸다.
+```bash
+python3 -m idor_ctx.review --source <소스 폴더> --candidates cand.json --out review.json \
+    [--model qwen2.5:7b] [--condition D_depth2] [--policy policy.json] [--dry-run]
+```
+- `idor_ctx/route_map.py`: OpenAPI 작업 → 핸들러 자동 연결 (operationId, 라우트 데코레이터, FastAPI 기본 operationId)
+- `idor_ctx/review.py`: 중복 제거 → 연결 → 문맥 추출 → LLM 판정. `--dry-run`은 LLM 없이 연결·문맥만 낸다.
+
 ## 한계 (구현 범위 밖)
 - import 추적, 메서드·클래스 타입 추론, 동적 호출, 데코레이터, 중첩 함수 분리, 전역 변수와 클래스 정의 추출은 지원하지 않는다. B~D 조건에는 전역 데이터가 들어가지 않는다.
 - 파일 하나만 다룬다. 웹 프레임워크 라우팅이나 세션 처리는 다루지 않는다.
